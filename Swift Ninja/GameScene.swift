@@ -104,32 +104,28 @@ class GameScene: SKScene {
     case .chain:
       createEnemy()
 
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 5.0))
-      { [weak self] in self?.createEnemy() }
+      (1...4).forEach
+      {
+        let delay = (chainDelay / 5.0 * Double($0))
 
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 5.0 * 2))
-      { [weak self] in self?.createEnemy() }
-
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 5.0 * 3))
-      { [weak self] in self?.createEnemy() }
-
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 5.0 * 4))
-      { [weak self] in self?.createEnemy() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay )
+        { [weak self] in
+            self?.createEnemy()
+        }
+      }
 
     case .fastChain:
       createEnemy()
 
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 10.0))
-      { [weak self] in self?.createEnemy() }
+      (1...4).forEach
+      {
+        let delay = (chainDelay / 10.0 * Double($0))
 
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 10.0 * 2))
-      { [weak self] in self?.createEnemy() }
-
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 10.0 * 3))
-      { [weak self] in self?.createEnemy() }
-
-      DispatchQueue.main.asyncAfter(deadline: .now()+(chainDelay / 10.0 * 4))
-      { [weak self] in self?.createEnemy() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay)
+        {[weak self] in
+          self?.createEnemy()
+        }
+      }
 
     }
 
