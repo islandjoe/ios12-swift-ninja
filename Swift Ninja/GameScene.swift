@@ -222,16 +222,19 @@ class GameScene: SKScene {
 
   }
 
+  // Enemy types
+  let bomb    = 0
+  let penguin = 1
 
   func createEnemy(forceBomb:ForceBomb = .random) {
 
     let enemy:SKSpriteNode
     var enemyType = Int.random(in: 0...6 )
 
-    if forceBomb == .never {       enemyType = 1 }
-    else if forceBomb == .always { enemyType = 0 }
+    if forceBomb == .never {       enemyType = penguin }
+    else if forceBomb == .always { enemyType = bomb }
 
-    if enemyType == 0
+    if enemyType == bomb
     { // Bomb code here
 
       // 1
