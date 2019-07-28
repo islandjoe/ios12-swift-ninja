@@ -344,13 +344,10 @@ class GameScene: SKScene {
 
     var bombCount = 0
 
-    for node in activeEnemies
+    for node in activeEnemies where node.name == "bombContainer"
     {
-      if node.name == "bombContainer"
-      {
         bombCount += 1
         break
-      }
     }
 
     if bombCount == 0
