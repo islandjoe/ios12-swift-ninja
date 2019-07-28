@@ -33,9 +33,6 @@ class GameScene: SKScene {
   var activeSliceFG:SKShapeNode!
   var activeSlicePoints = [CGPoint]()
 
-  var isSwooshSoundActive = false
-  var bombSoundEffect:AVAudioPlayer?
-
   var activeEnemies = [SKSpriteNode]()
 
   var popupTime = 0.9
@@ -46,6 +43,8 @@ class GameScene: SKScene {
 
   var isGameEnded = false
 
+  var isSwooshSoundActive = false
+  var bombSoundEffect:AVAudioPlayer?
 
   func playSwooshSound() {
 
@@ -231,8 +230,8 @@ class GameScene: SKScene {
     let enemy:SKSpriteNode
     var enemyType = Int.random(in: 0...6 )
 
-    if forceBomb == .never {       enemyType = penguin }
-    else if forceBomb == .always { enemyType = bomb }
+    if      forceBomb == .never  { enemyType = penguin }
+    else if forceBomb == .always { enemyType = bomb    }
 
     if enemyType == bomb
     { // Bomb code here
@@ -276,12 +275,12 @@ class GameScene: SKScene {
       }
 
     }
-    else
+    else //types are from penguin to 6
     {
       enemy = SKSpriteNode(imageNamed: "penguin" )
       run( SKAction.playSoundFileNamed( "launch.caf", waitForCompletion: false ) )
 
-      enemy.name = "enemy"
+      enemy.name = ["enemy", "fast"].randomElement()!
     }
 
     // 1
@@ -301,11 +300,12 @@ class GameScene: SKScene {
     // 4
     let randomYVelocity = Int.random(in: 24...32 )
 
+    let speedFactor = (enemy.name! == "fast") ? 140 : 40
     // 5
     enemy.physicsBody = SKPhysicsBody(circleOfRadius: 64 )
     enemy.physicsBody?.velocity = CGVector(
-        dx: randomXVelocity * 40,
-        dy: randomYVelocity * 40 )
+        dx: randomXVelocity * speedFactor,
+        dy: randomYVelocity * speedFactor )
     enemy.physicsBody?.angularVelocity = randomAngularVelocity
     enemy.physicsBody?.collisionBitMask = 0
 
@@ -368,7 +368,7 @@ class GameScene: SKScene {
         {
           node.removeAllActions()
 
-          if node.name == "enemy"
+          if node.name == "enemy" || node.name == "fast"
           {
             node.name = ""
             subtractLife()
@@ -422,7 +422,7 @@ class GameScene: SKScene {
     for
     case let node as SKSpriteNode in nodesAtPoint
     {
-      if node.name == "enemy"
+      if node.name == "enemy" || node.name == "fast"
       { // Destroy penguin
         // 1
         if
@@ -433,7 +433,7 @@ class GameScene: SKScene {
         }
 
         // 2
-        node.name = ""
+
 
         // 3
         node.physicsBody?.isDynamic = false
@@ -449,6 +449,13 @@ class GameScene: SKScene {
 
         // 6
         score += 1
+
+        if let name = node.name
+        {
+          if name == "fast"  { score += 10 }
+        }
+
+        node.name = ""
 
         // 7
         if
