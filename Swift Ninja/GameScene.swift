@@ -287,20 +287,11 @@ class GameScene: SKScene {
     let randomXVelocity:Int
 
     //3
-    randomXVelocity = {
-      switch randomPosition.x {
-      case let x where x < 256:
-        return Int.random(in: 8...15 )
-
-      case let x where x < 512:
-        return Int.random(in: 3...5 )
-
-      case let x where x < 768:
-        return -Int.random(in: 3...5 )
-
-      default:
-        return -Int.random(in: 8...15 )
-      }
+    randomXVelocity = { switch randomPosition.x {
+      case let x where x < 256: return  Int.random(in: 8...15 )
+      case let x where x < 512: return  Int.random(in: 3...5 )
+      case let x where x < 768: return -Int.random(in: 3...5 )
+      default: return -Int.random(in: 8...15 )  }
     }()
 
     // 4
@@ -345,6 +336,9 @@ class GameScene: SKScene {
 
   }
 
+  private func reset(_ node:inout SKSpriteNode) {
+    node.name = ""
+  }
 
   override func update(_ currentTime: TimeInterval) {
 
@@ -368,7 +362,7 @@ class GameScene: SKScene {
 
     if activeEnemies.count > 0
     {
-      for (index, node) in activeEnemies.enumerated().reversed()
+      for var (index, node) in activeEnemies.enumerated().reversed()
       {
         if node.position.y < -140
         {
@@ -376,7 +370,7 @@ class GameScene: SKScene {
 
           if node.name == "enemy" || node.name == "fast"
           {
-            node.name = ""
+            reset( &node )
             subtractLife()
 
             node.removeFromParent()
@@ -384,7 +378,7 @@ class GameScene: SKScene {
           }
           else if node.name == "bombContainer"
           {
-            node.name = ""
+            reset( &node )
             node.removeFromParent()
             activeEnemies.remove(at: index )
           }
@@ -417,18 +411,15 @@ class GameScene: SKScene {
 
     redrawActiveSlice()
 
-    if !isSwooshSoundActive
-    {
-      playSwooshSound()
-    }
-
+    if !isSwooshSoundActive { playSwooshSound() }
 
     let nodesAtPoint = nodes(at: location)
 
     for
-    case let node as SKSpriteNode in nodesAtPoint
+    case var node as SKSpriteNode in nodesAtPoint
     {
-      if node.name == "enemy" || node.name == "fast"
+      if
+      (node.name == "enemy" || node.name == "fast")
       { // Destroy penguin
         // 1
         if
@@ -439,8 +430,6 @@ class GameScene: SKScene {
         }
 
         // 2
-
-
         // 3
         node.physicsBody?.isDynamic = false
 
@@ -456,12 +445,11 @@ class GameScene: SKScene {
         // 6
         score += 1
 
-        if let name = node.name
-        {
-          if name == "fast"  { score += 10 }
+        if let name = node.name, name == "fast"
+        { score += 9
         }
 
-        node.name = ""
+        reset( &node )
 
         // 7
         if
@@ -487,7 +475,8 @@ class GameScene: SKScene {
           addChild( emitter )
         }
 
-        node.name = ""
+        reset( &node )
+
         bombContainer.physicsBody?.isDynamic = false
 
         let scaleOut = SKAction.scale(to: 0.001, duration: 0.2)
