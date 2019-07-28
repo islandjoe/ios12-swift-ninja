@@ -104,8 +104,7 @@ class GameScene: SKScene {
     case .chain:
       createEnemy()
 
-      (1...4).forEach
-      {
+      (1...4).forEach {
         let delay = (chainDelay / 5.0 * Double($0))
 
         DispatchQueue.main.asyncAfter(deadline: .now() + delay )
@@ -117,8 +116,7 @@ class GameScene: SKScene {
     case .fastChain:
       createEnemy()
 
-      (1...4).forEach
-      {
+      (1...4).forEach {
         let delay = (chainDelay / 10.0 * Double($0))
 
         DispatchQueue.main.asyncAfter(deadline: .now() + delay)
@@ -226,8 +224,9 @@ class GameScene: SKScene {
     let enemy:SKSpriteNode
     var enemyType = Int.random(in: 0...6 )
 
-    if      forceBomb == .never  { enemyType = penguin }
-    else if forceBomb == .always { enemyType = bomb    }
+    enemyType = forceBomb == .never  ? penguin
+              : forceBomb == .always ? bomb
+              : enemyType
 
     if enemyType == bomb
     { // Bomb code here
@@ -288,20 +287,31 @@ class GameScene: SKScene {
     let randomXVelocity:Int
 
     //3
-    if      randomPosition.x < 256 { randomXVelocity =  Int.random(in: 8...15 ) }
-    else if randomPosition.x < 512 { randomXVelocity =  Int.random(in: 3...5  ) }
-    else if randomPosition.x < 768 { randomXVelocity = -Int.random(in: 3...5  ) }
-    else                           { randomXVelocity = -Int.random(in: 8...15 ) }
+    randomXVelocity = {
+      switch randomPosition.x {
+      case let x where x < 256:
+        return Int.random(in: 8...15 )
+
+      case let x where x < 512:
+        return Int.random(in: 3...5 )
+
+      case let x where x < 768:
+        return -Int.random(in: 3...5 )
+
+      default:
+        return -Int.random(in: 8...15 )
+      }
+    }()
 
     // 4
     let randomYVelocity = Int.random(in: 24...32 )
 
     let speedFactor = (enemy.name! == "fast") ? 140 : 40
+    let xSpeed = randomXVelocity * speedFactor
+    let ySpeed = randomYVelocity * speedFactor
     // 5
     enemy.physicsBody = SKPhysicsBody(circleOfRadius: 64 )
-    enemy.physicsBody?.velocity = CGVector(
-        dx: randomXVelocity * speedFactor,
-        dy: randomYVelocity * speedFactor )
+    enemy.physicsBody?.velocity = CGVector(dx: xSpeed, dy: ySpeed)
     enemy.physicsBody?.angularVelocity = randomAngularVelocity
     enemy.physicsBody?.collisionBitMask = 0
 
