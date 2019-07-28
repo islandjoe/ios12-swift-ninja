@@ -359,27 +359,27 @@ class GameScene: SKScene {
 
     if activeEnemies.count > 0
     {
-      for var (index, node) in activeEnemies.enumerated().reversed()
+      for
+      var (index, node) in activeEnemies.enumerated().reversed()
+      where node.position.y < -140
       {
-        if node.position.y < -140
+        node.removeAllActions()
+
+        if node.name == "enemy" || node.name == "fast"
         {
-          node.removeAllActions()
+          reset( &node )
+          subtractLife()
 
-          if node.name == "enemy" || node.name == "fast"
-          {
-            reset( &node )
-            subtractLife()
-
-            node.removeFromParent()
-            activeEnemies.remove(at: index )
-          }
-          else if node.name == "bombContainer"
-          {
-            reset( &node )
-            node.removeFromParent()
-            activeEnemies.remove(at: index )
-          }
+          node.removeFromParent()
+          activeEnemies.remove(at: index )
         }
+        else if node.name == "bombContainer"
+        {
+          reset( &node )
+          node.removeFromParent()
+          activeEnemies.remove(at: index )
+        }
+
       }
     }
     else
