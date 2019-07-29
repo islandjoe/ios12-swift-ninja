@@ -517,6 +517,12 @@ class GameScene: SKScene {
       livesImages[2].texture = SKTexture(imageNamed: "sliceLifeGone" )
     }
 
+    let gameOver = SKSpriteNode(imageNamed: "gameover" )
+    gameOver.position  = CGPoint(x: 512, y: 384)
+    gameOver.zPosition = 1
+    gameOver.scale(to: CGSize(width: 300, height: 240))
+
+    addChild( gameOver )
   }
 
 
